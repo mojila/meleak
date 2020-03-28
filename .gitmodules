@@ -1,3 +1,6 @@
 [submodule "option"]
 	path = option
 	url = https://github.com/mojila/meleak-option.git
+[submodule "panel"]
+	path = panel
+	url = https://github.com/mojila/meleak-panel.git
