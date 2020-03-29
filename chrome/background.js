@@ -1,18 +1,40 @@
-async function heapCallback (heapUsage) {
-  console.log(heapUsage)
+const ACTIONS = {
+  attachDebugger: 'attach_debugger',
+  detachDebugger: 'detach_debugger'
 }
 
-async function attached () {
+const attached = async () => {
   if (chrome.runtime.lastError) {
     return console.warn(chrome.runtime.lastError.message)
   }
+  chrome.browserAction.setIcon({ path: 'icon-active.png' })
 }
 
-async function clicked (tab) {
-  const VERSION = '1.0'
-
-  await chrome.debugger.attach({ tabId: tab.id }, VERSION, attached.bind(null, tab.id))
-  chrome.debugger.sendCommand({ tabId: tab.id }, 'Runtime.getHeapUsage', heapCallback)
+async function attachToDebugger (tabId) {
+  const VERSION = '1.3'
+  chrome.debugger.attach({ tabId }, VERSION, attached.bind(null, tabId))
 }
 
-chrome.browserAction.onClicked.addListener(clicked)
+async function detached () {
+  chrome.browserAction.setIcon({ path: 'icon.png' })
+} 
+
+async function detachFromDebugger (tabId) {
+  chrome.debugger.detach({ tabId }, detached)
+}
+
+async function messageIncoming ({ action, payload }, _sender, _sendResponse) {
+  switch (action) {
+    case ACTIONS.attachDebugger:
+      attachToDebugger(payload.tabId)
+      break
+    case ACTIONS.detachDebugger:
+      detachFromDebugger(payload.tabId)
+      break
+    default:
+      break
+  }
+  return
+}
+
+chrome.runtime.onMessage.addListener(messageIncoming)
