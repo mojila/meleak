@@ -1,17 +1,30 @@
 {
   "name": "Meleak",
+  "description": "JavaScript Memory Leak Detector for FrontEnd Developer",
+  "icons": { 
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+   "128": "icons/icon.png" 
+  },
   "version": "0.1",
   "permissions": [
     "debugger"
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "background/actions.js",
+      "background/state.js",
+      "background/realtime.js",
+      "background/debugger.js",
+      "background/index.js"
+    ]
   },
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": "icons/icon.png",
     "default_title": "Meleak",
     "default_popup": "popup/index.html"
   },
   "manifest_version": 2,
-  "content_security_policy": "script-src 'self' 'unsafe-hashes' 'sha256-P1FuWeLX9DgV1imIT15v/O/13jUlWdGDVQ+WOWYOaJ4='; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-hashes' 'sha256-P1FuWeLX9DgV1imIT15v/O/13jUlWdGDVQ+WOWYOaJ4='; object-src 'self'",
+  "author": "Mojila"
 }
