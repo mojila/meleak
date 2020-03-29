@@ -4,15 +4,12 @@ const attached = async (tabId) => {
   }
 
   await chrome.browserAction.setIcon({ path: 'icons/icon-active.png' })
-  state = {
-    ...state,
-    isAttachedToDebugger: true,
-    tabId
-  }
+  state.isAttachedToDebugger = true
+  state.tabId = tabId
 }
 
 async function detached () {
-  chrome.browserAction.setIcon({ path: 'icons/icon.png' })
+  await chrome.browserAction.setIcon({ path: 'icons/icon.png' })
   state.isAttachedToDebugger = false
 } 
 
