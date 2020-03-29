@@ -5,16 +5,42 @@ const ACTIONS = {
 }
 
 var state = {
-  isAttachedToDebugger: false
+  tabId: 0,
+  isAttachedToDebugger: false,
+  usedHeap: 0,
+  totalHeap: 0
 }
 
-const attached = async () => {
+const updateHeap = setInterval(() => {
+  if (state.isAttachedToDebugger) {
+    chrome.debugger.sendCommand({ tabId: state.tabId }, 'Runtime.getHeapUsage', (data) => {
+      state = {
+        ...state,
+        totalHeap: data.totalSize,
+        usedHeap: data.usedSize
+      }
+
+      return;
+    })
+
+    console.log(state)
+
+    return chrome.runtime
+      .sendMessage({ action: 'update_heap', payload: { usedHeap: state.usedHeap, totalHeap: state.totalHeap } })
+  }
+}, 1000)
+
+const attached = async (tabId) => {
   if (chrome.runtime.lastError) {
     return console.warn(chrome.runtime.lastError.message)
   }
 
   await chrome.browserAction.setIcon({ path: 'icon-active.png' })
-  state.isAttachedToDebugger = true
+  state = {
+    ...state,
+    isAttachedToDebugger: true,
+    tabId
+  }
 }
 
 async function detached () {
