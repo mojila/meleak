@@ -23,8 +23,6 @@ const updateHeap = setInterval(() => {
       return;
     })
 
-    console.log(state)
-
     return chrome.runtime
       .sendMessage({ action: 'update_heap', payload: { usedHeap: state.usedHeap, totalHeap: state.totalHeap } })
   }
