@@ -4,16 +4,21 @@ const attached = async (tabId) => {
   }
 
   await chrome.browserAction.setIcon({ path: 'icons/icon-active.png' })
+  await chrome.browserAction.setBadgeText({ text: '0', tabId })
+  await chrome.browserAction.setBadgeBackgroundColor({ color: '#005b96', tabId: tabId })
+
   state.isAttachedToDebugger = true
   state.tabId = tabId
 }
 
 async function detached () {
   await chrome.browserAction.setIcon({ path: 'icons/icon.png' })
+
   state.isAttachedToDebugger = false
 } 
 
 async function detachFromDebugger (tabId) {
+  await chrome.browserAction.setBadgeText({ text: '', tabId: tabId })
   chrome.debugger.detach({ tabId }, detached)
 }
 

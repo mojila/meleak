@@ -1,5 +1,6 @@
 const updateHeap = async () => {
-  return await chrome.runtime
+  await chrome.browserAction.setBadgeText({ text: String((state.totalHeap / 1000000).toFixed(0)) + 'mb', tabId: state.tabId })
+  return chrome.runtime
       .sendMessage({ action: 'update_heap', payload: { usedHeap: state.usedHeap, totalHeap: state.totalHeap, heapData: state.heapData } }) 
 }
 
@@ -10,7 +11,12 @@ const realtime = setInterval(() => {
       
       state.totalHeap = totalSize
       state.usedHeap = usedSize
-      state.heapData = [...state.heapData, { time: time.toISOString(), x: state.heapData.length + 1, y: (totalSize / 1000000).toFixed(2) }]
+
+      if (state.heapData.length < 10) {
+        state.heapData = [...state.heapData, (totalSize / 1000000).toFixed(2)]
+      } else {
+        state.heapData = [...state.heapData.slice(1), (totalSize / 1000000).toFixed(2)]
+      }
 
       return;
     })
