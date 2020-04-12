@@ -3,7 +3,8 @@ var state = {
   isAttachedToDebugger: false,
   usedHeap: 0,
   totalHeap: 0,
-  heapData: []
+  heapData: [],
+  sigma: 3
 }
 
 const resetState = () => {
