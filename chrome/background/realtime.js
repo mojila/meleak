@@ -10,10 +10,8 @@ const updateHeap = async () => {
       tabId: state.tabId 
     })
 
-  let outliers = await outlier_detection(state.heapData)
-
   // hasil outlier
-  console.log(outliers)
+  let outliers = await outlier_detection(state.heapData)  
   
   return chrome
     .runtime
