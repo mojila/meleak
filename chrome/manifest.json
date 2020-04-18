@@ -9,7 +9,8 @@
   "version": "0.1",
   "permissions": [
     "debugger",
-    "notifications"
+    "notifications",
+    "storage"
   ],
   "background": {
     "scripts": [

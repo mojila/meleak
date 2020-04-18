@@ -4,7 +4,7 @@ var state = {
   usedHeap: 0,
   totalHeap: 0,
   heapData: [],
-  sigma: 3
+  sigma: 1
 }
 
 const resetState = () => {

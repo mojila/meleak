@@ -11,7 +11,14 @@ const updateHeap = async () => {
     })
 
   // hasil outlier
-  let outliers = await outlier_detection(state.heapData)  
+  let outliers = await outlier_detection(state.heapData)
+
+  if (outliers.length > 0) {
+    console.log(outliers, state.heapData)
+    // await chrome.storage.sync.set({outlier: { found: outliers, sequence: state.heapData }}, function() {
+    //   console.log('Value is set to ' + value);
+    // });
+  }
   
   return chrome
     .runtime
@@ -30,15 +37,15 @@ const realtime = setInterval(() => {
     chrome
       .debugger
       .sendCommand({ tabId: state.tabId }, 'Runtime.getHeapUsage', ({ totalSize, usedSize }) => {
-        let time = new Date()
+        let time = (new Date()).toISOString()
         
         state.totalHeap = totalSize
         state.usedHeap = usedSize
 
         if (state.heapData.length < 60) {
-          state.heapData = [...state.heapData, { time: (new Date()).toISOString(), heap: (totalSize / 1000000).toFixed(2) }]
+          state.heapData = [...state.heapData, { time: time, heap: Number((totalSize / 1000000).toFixed(2)) }]
         } else {
-          state.heapData = [...state.heapData.slice(1), { time: (new Date()).toISOString(), heap: (totalSize / 1000000).toFixed(2) }]
+          state.heapData = [...state.heapData.slice(1), { time: time, heap: Number((totalSize / 1000000).toFixed(2)) }]
         }
 
         return;
