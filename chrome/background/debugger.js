@@ -6,6 +6,12 @@ const attached = async (tabId) => {
   await chrome.browserAction.setIcon({ path: 'icons/icon-active.png' })
   await chrome.browserAction.setBadgeText({ text: '0', tabId })
   await chrome.browserAction.setBadgeBackgroundColor({ color: '#005b96', tabId: tabId })
+  await chrome.notifications.create({
+    type: 'basic',
+    iconUrl: 'icons/icon-active.png',
+    title: 'Meleak',
+    message: 'Memory Debugging is started.'
+  })
 
   state.isAttachedToDebugger = true
   state.tabId = tabId
@@ -13,6 +19,12 @@ const attached = async (tabId) => {
 
 async function detached () {
   await chrome.browserAction.setIcon({ path: 'icons/icon.png' })
+  await chrome.notifications.create({
+    type: 'basic',
+    iconUrl: 'icons/icon.png',
+    title: 'Meleak',
+    message: 'Memory Debugging is stopped.'
+  })
 
   state.isAttachedToDebugger = false
 } 

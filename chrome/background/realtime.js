@@ -14,7 +14,12 @@ const updateHeap = async () => {
   let outliers = await outlier_detection(state.heapData)
 
   if (outliers.length > 0) {
-    console.log(outliers, state.heapData)
+    await chrome.notifications.create({
+      type: 'basic',
+      iconUrl: 'icons/icon-memory-anomaly.png',
+      title: 'Meleak',
+      message: 'Memory Anomaly happened!.'
+    })
     // await chrome.storage.sync.set({outlier: { found: outliers, sequence: state.heapData }}, function() {
     //   console.log('Value is set to ' + value);
     // });
