@@ -20,9 +20,6 @@ const updateHeap = async () => {
       title: 'Meleak',
       message: 'Memory Anomaly happened!.'
     })
-    // await chrome.storage.sync.set({outlier: { found: outliers, sequence: state.heapData }}, function() {
-    //   console.log('Value is set to ' + value);
-    // });
   }
   
   return chrome
