@@ -1,3 +1,37 @@
+const memoryAnomalyNotification = () => {
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: 'icons/icon-memory-anomaly.png',
+    title: 'Meleak',
+    message: 'Memory Anomaly happened!.'
+  })
+}
+
+const anomalyAnalysis = (anomaly) => {
+  let isAnomalyDetected = anomaly.length > 0
+  let isPreviousEmpty = state.previousAnomaly.size === 0
+
+  if (isAnomalyDetected) {
+    if (isPreviousEmpty) {
+      state.previousAnomaly = new Set(anomaly)
+      memoryAnomalyNotification()
+    } else {
+      let previousAnomalySize = state.previousAnomaly.size
+      let newAnomaly = new Set([...state.previousAnomaly, ...anomaly])
+
+      if (previousAnomalySize !== newAnomaly.size) {
+        if (newAnomaly.size <= 30) {
+          state.previousAnomaly = newAnomaly
+        } else {
+          state.previousAnomaly = new Set(anomaly)
+        }
+
+        memoryAnomalyNotification()
+      }
+    }
+  }
+}
+
 const updateHeap = async () => {
   let series = await state
     .heapData
@@ -11,16 +45,8 @@ const updateHeap = async () => {
     })
 
   // hasil outlier
-  let outliers = await outlier_detection(state.heapData)
-
-  if (outliers.length > 0) {
-    await chrome.notifications.create({
-      type: 'basic',
-      iconUrl: 'icons/icon-memory-anomaly.png',
-      title: 'Meleak',
-      message: 'Memory Anomaly happened!.'
-    })
-  }
+  let anomaly = await outlier_detection(state.heapData)
+  anomalyAnalysis(anomaly)
   
   return chrome
     .runtime
