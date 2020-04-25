@@ -3,8 +3,6 @@ const attached = async (tabId) => {
     return console.warn(chrome.runtime.lastError.message)
   }
 
-  state.tabId = tabId
-
   chrome.browserAction.setIcon({ path: 'icons/icon-active.png' })
   chrome.browserAction.setBadgeText({ text: '0', tabId })
   chrome.browserAction.setBadgeBackgroundColor({ color: '#005b96', tabId: tabId })
@@ -15,8 +13,9 @@ const attached = async (tabId) => {
     message: 'Memory Debugging is started.'
   })
   chrome.debugger
-    .sendCommand({ tabId: tabId }, 'HeapProfiler.collectGarbage', () => {
-      state.isAttachedToDebugger = true
+    .sendCommand({ tabId: tabId }, 'HeapProfiler.collectGarbage', async () => {
+      state.isAttachedToDebugger = await true
+      state.tabId = tabId
     })
 }
 
