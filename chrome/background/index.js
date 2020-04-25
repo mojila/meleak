@@ -4,6 +4,10 @@ async function messageIncoming ({ action, payload }, _sender, sendResponse) {
       attachToDebugger(payload.tabId)
       break
     case ACTIONS.detachDebugger:
+      state.usedHeap = 0
+      state.totalHeap = 0
+      state.heapData = []
+      
       detachFromDebugger(payload.tabId)
       break
     case ACTIONS.isAttachedDebugger:

@@ -14,7 +14,7 @@ const anomalyAnalysis = (anomaly) => {
   if (isAnomalyDetected) {
     if (isPreviousEmpty) {
       state.previousAnomaly = new Set(anomaly)
-      memoryAnomalyNotification()
+      // memoryAnomalyNotification()
     } else {
       let previousAnomalySize = state.previousAnomaly.size
       let newAnomaly = new Set([...state.previousAnomaly, ...anomaly])
@@ -26,7 +26,7 @@ const anomalyAnalysis = (anomaly) => {
           state.previousAnomaly = new Set(anomaly)
         }
 
-        memoryAnomalyNotification()
+        // memoryAnomalyNotification()
       }
     }
   }
@@ -37,7 +37,7 @@ const updateHeap = async () => {
     .heapData
     .map(d => d.heap)
 
-  await chrome
+  chrome
     .browserAction
     .setBadgeText({ 
       text: String((state.totalHeap / 1000000).toFixed(0)) + 'mb', 
