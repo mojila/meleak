@@ -14,7 +14,7 @@ const anomalyAnalysis = (anomaly) => {
   if (isAnomalyDetected) {
     if (isPreviousEmpty) {
       state.previousAnomaly = new Set(anomaly)
-      memoryAnomalyNotification()
+      // memoryAnomalyNotification()
     } else {
       let previousAnomalySize = state.previousAnomaly.size
       let newAnomaly = new Set([...state.previousAnomaly, ...anomaly])
@@ -26,7 +26,7 @@ const anomalyAnalysis = (anomaly) => {
           state.previousAnomaly = new Set(anomaly)
         }
 
-        memoryAnomalyNotification()
+        // memoryAnomalyNotification()
       }
     }
   }

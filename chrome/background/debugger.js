@@ -12,8 +12,10 @@ const attached = async (tabId) => {
     title: 'Meleak',
     message: 'Memory Debugging is started.'
   })
-
-  state.isAttachedToDebugger = true
+  await chrome.debugger
+    .sendCommand({ tabId: tabId }, 'HeapProfiler.collectGarbage', () => {
+      state.isAttachedToDebugger = true
+    })
   state.tabId = tabId
 }
 
