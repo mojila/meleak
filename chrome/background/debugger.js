@@ -3,6 +3,8 @@ const attached = async (tabId) => {
     return console.warn(chrome.runtime.lastError.message)
   }
 
+  state.tabId = tabId
+
   await chrome.browserAction.setIcon({ path: 'icons/icon-active.png' })
   await chrome.browserAction.setBadgeText({ text: '0', tabId })
   await chrome.browserAction.setBadgeBackgroundColor({ color: '#005b96', tabId: tabId })
@@ -16,7 +18,6 @@ const attached = async (tabId) => {
     .sendCommand({ tabId: tabId }, 'HeapProfiler.collectGarbage', () => {
       state.isAttachedToDebugger = true
     })
-  state.tabId = tabId
 }
 
 async function detached () {
