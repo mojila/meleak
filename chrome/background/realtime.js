@@ -37,7 +37,7 @@ const updateHeap = async () => {
     .heapData
     .map(d => d.heap)
 
-  await chrome
+  chrome
     .browserAction
     .setBadgeText({ 
       text: String((state.totalHeap / 1000000).toFixed(0)) + 'mb', 

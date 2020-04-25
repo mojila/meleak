@@ -5,24 +5,24 @@ const attached = async (tabId) => {
 
   state.tabId = tabId
 
-  await chrome.browserAction.setIcon({ path: 'icons/icon-active.png' })
-  await chrome.browserAction.setBadgeText({ text: '0', tabId })
-  await chrome.browserAction.setBadgeBackgroundColor({ color: '#005b96', tabId: tabId })
-  await chrome.notifications.create({
+  chrome.browserAction.setIcon({ path: 'icons/icon-active.png' })
+  chrome.browserAction.setBadgeText({ text: '0', tabId })
+  chrome.browserAction.setBadgeBackgroundColor({ color: '#005b96', tabId: tabId })
+  chrome.notifications.create({
     type: 'basic',
     iconUrl: 'icons/icon-active.png',
     title: 'Meleak',
     message: 'Memory Debugging is started.'
   })
-  await chrome.debugger
+  chrome.debugger
     .sendCommand({ tabId: tabId }, 'HeapProfiler.collectGarbage', () => {
       state.isAttachedToDebugger = true
     })
 }
 
 async function detached () {
-  await chrome.browserAction.setIcon({ path: 'icons/icon.png' })
-  await chrome.notifications.create({
+  chrome.browserAction.setIcon({ path: 'icons/icon.png' })
+  chrome.notifications.create({
     type: 'basic',
     iconUrl: 'icons/icon.png',
     title: 'Meleak',
@@ -33,7 +33,7 @@ async function detached () {
 } 
 
 async function detachFromDebugger (tabId) {
-  await chrome.browserAction.setBadgeText({ text: '', tabId: tabId })
+  chrome.browserAction.setBadgeText({ text: '', tabId: tabId })
   chrome.debugger.detach({ tabId }, detached)
 }
 
