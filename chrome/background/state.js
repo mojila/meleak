@@ -4,7 +4,7 @@ var state = {
   usedHeap: 0,
   totalHeap: 0,
   heapData: [],
-  previousAnomaly: new Set(),
+  previousAnomalyMean: 0,
   sigma: 1
 }
 

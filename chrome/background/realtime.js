@@ -9,24 +9,18 @@ const memoryAnomalyNotification = () => {
 
 const anomalyAnalysis = (anomaly) => {
   let isAnomalyDetected = anomaly.length > 0
-  let isPreviousEmpty = state.previousAnomaly.size === 0
+  // let isPreviousEmpty = state.previousAnomaly.size === 0
 
   if (isAnomalyDetected) {
-    if (isPreviousEmpty) {
-      state.previousAnomaly = new Set(anomaly)
-      // memoryAnomalyNotification()
+    let extractHeapSize = anomaly.map(d => d.heap)
+    let meanAnomalyHeapSizes = mean(extractHeapSize)
+    console.log(state.previousAnomalyMean, meanAnomalyHeapSizes)
+    if (state.previousAnomalyMean === 0) {
+      state.previousAnomalyMean = meanAnomalyHeapSizes
     } else {
-      let previousAnomalySize = state.previousAnomaly.size
-      let newAnomaly = new Set([...state.previousAnomaly, ...anomaly])
-
-      if (previousAnomalySize !== newAnomaly.size) {
-        if (newAnomaly.size <= 30) {
-          state.previousAnomaly = newAnomaly
-        } else {
-          state.previousAnomaly = new Set(anomaly)
-        }
-
-        // memoryAnomalyNotification()
+      if (meanAnomalyHeapSizes > state.previousAnomalyMean) {
+        state.previousAnomalyMean = meanAnomalyHeapSizes
+        console.log('Memory Leak!')
       }
     }
   }
@@ -40,7 +34,7 @@ const updateHeap = async () => {
   chrome
     .browserAction
     .setBadgeText({ 
-      text: String((state.totalHeap / 1000000).toFixed(0)) + 'mb', 
+      text: String((state.usedHeap / 1000000).toFixed(0)) + 'mb', 
       tabId: state.tabId 
     })
 
@@ -71,9 +65,9 @@ const realtime = setInterval(() => {
         state.usedHeap = usedSize
 
         if (state.heapData.length < 60) {
-          state.heapData = [...state.heapData, { time: time, heap: Number((totalSize / 1000000).toFixed(2)) }]
+          state.heapData = [...state.heapData, { time: time, heap: Number((usedSize / 1000000).toFixed(2)) }]
         } else {
-          state.heapData = [...state.heapData.slice(1), { time: time, heap: Number((totalSize / 1000000).toFixed(2)) }]
+          state.heapData = [...state.heapData.slice(1), { time: time, heap: Number((usedSize / 1000000).toFixed(2)) }]
         }
 
         return;
