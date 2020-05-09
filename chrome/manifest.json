@@ -16,8 +16,9 @@
   ],
   "background": {
     "scripts": [
-      "background/url.js",
       "background/actions.js",
+      "background/url.js",
+      "background/debugger.js",
       "background/reducer.js",
       "background/index.js"
     ]

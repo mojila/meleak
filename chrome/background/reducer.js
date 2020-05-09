@@ -1,7 +1,7 @@
 function reducer(action = '', payload = {} || '' || 0 || false) {
   switch(action) {
     case ACTIONS.debuggerStart:
-      console.log('started')
+      startDebugger(payload)
       break
     default:
       return

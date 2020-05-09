@@ -1,3 +1,4 @@
 const ACTIONS = {
-  debuggerStart: 'debugger_start'
+  debuggerStart: 'debugger_start',
+  debuggerStop: 'debugger_stop'
 }
