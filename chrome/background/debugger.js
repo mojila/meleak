@@ -1,5 +1,9 @@
 function attached(tab = { id: 0, url: '' }) {
-  console.log('started', tab)
+  changeUrl(tab.url)
+
+  chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
+    console.log(details)
+  }, url);
 }
 
 function startDebugger(payload = { 
