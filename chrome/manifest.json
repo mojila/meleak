@@ -6,20 +6,19 @@
     "48": "icons/icon.png",
    "128": "icons/icon.png" 
   },
-  "version": "0.1",
+  "version": "1.0",
   "permissions": [
     "activeTab",
     "debugger",
     "notifications",
-    "storage"
+    "storage",
+    "webNavigation"
   ],
   "background": {
     "scripts": [
+      "background/url.js",
       "background/actions.js",
-      "background/state.js",
-      "background/compute.js",
-      "background/realtime.js",
-      "background/debugger.js",
+      "background/reducer.js",
       "background/index.js"
     ]
   },
@@ -29,6 +28,5 @@
     "default_popup": "popup/index.html"
   },
   "manifest_version": 2,
-  "content_security_policy": "script-src 'self' 'unsafe-hashes' 'sha256-P1FuWeLX9DgV1imIT15v/O/13jUlWdGDVQ+WOWYOaJ4='; object-src 'self'",
   "author": "Mojila"
 }

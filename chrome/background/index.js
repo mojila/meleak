@@ -1,23 +1,10 @@
-async function messageIncoming ({ action, payload }, _sender, sendResponse) {
-  switch (action) {
-    case ACTIONS.attachDebugger:
-      attachToDebugger(payload.tabId)
-      break
-    case ACTIONS.detachDebugger:
-      state.usedHeap = 0
-      state.totalHeap = 0
-      state.heapData = []
-      
-      detachFromDebugger(payload.tabId)
-      break
-    case ACTIONS.isAttachedDebugger:
-      sendResponse(state.isAttachedToDebugger)
-      break
-    default:
-      break
-  }
-  return
-}
+// Detect Finish load page
+chrome.webNavigation.onCompleted.addListener(function(details) {
+  console.log(details)
+}, url);
 
-chrome.runtime.onMessage.addListener(messageIncoming)
-chrome.debugger.onDetach.addListener(detached)
+chrome.runtime.onMessage.addListener(function(message = { status: '', content: '', payload: {} }, sender, sendResponse) {
+  reducer(message.content, message.payload)
+
+  sendResponse({ status: 'success', content: 'received' })
+})
