@@ -1,8 +1,8 @@
 function pageUpdated(details = { frameId: 0, parentFrameId: -1, processId: 0, tabId: 0, timeStamp: 0, transitionQualifiers: [], transitionType: '', url: '' }) {
-  console.log(new Date(details.timeStamp).toISOString(), details.url)
+  console.log(new Date(details.timeStamp).toISOString(), new URL(details.url))
 }
 
-const boundPageUpdated = pageUpdated.bind(null)  
+const boundPageUpdated = pageUpdated.bind(null)
 
 function attached(tab = { id: 0, url: '' }) {
   if (chrome.runtime.lastError) {
@@ -11,7 +11,10 @@ function attached(tab = { id: 0, url: '' }) {
 
   changeUrl(tab.url)
 
-  console.log(new Date().toISOString(), tab.url)
+  const newUrl = new URL(tab.url)
+  const time = new Date().toISOString()
+
+  console.log(time, newUrl.origin)
 
   chrome.webNavigation.onHistoryStateUpdated.addListener(boundPageUpdated, url);
 }
