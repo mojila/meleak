@@ -1,11 +1,17 @@
-function pageUpdated(details) {
-  console.log(details)
+function pageUpdated(details = { frameId: 0, parentFrameId: -1, processId: 0, tabId: 0, timeStamp: 0, transitionQualifiers: [], transitionType: '', url: '' }) {
+  console.log(new Date(details.timeStamp).toISOString(), details.url)
 }
 
 const boundPageUpdated = pageUpdated.bind(null)  
 
 function attached(tab = { id: 0, url: '' }) {
+  if (chrome.runtime.lastError) {
+    console.warn(chrome.runtime.lastError.message)
+  }
+
   changeUrl(tab.url)
+
+  console.log(new Date().toISOString(), tab.url)
 
   chrome.webNavigation.onHistoryStateUpdated.addListener(boundPageUpdated, url);
 }
@@ -32,3 +38,7 @@ function stopDebugger(payload = {
 }) {
   chrome.debugger.detach({ tabId: payload.tab.id }, detached.bind(null, payload.tab))
 }
+
+chrome.debugger.onDetach.addListener(function (source = { tabId: 0 }, reason) {
+  detached()
+})
