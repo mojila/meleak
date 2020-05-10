@@ -13,14 +13,15 @@ const attached = async (tabId) => {
     message: 'Memory Debugging is started.'
   })
   chrome.debugger
-    .sendCommand({ tabId: tabId }, 'HeapProfiler.collectGarbage', async () => {
-      state.isAttachedToDebugger = await true
-      state.tabId = tabId
+    .sendCommand({ tabId: tabId }, 'HeapProfiler.collectGarbage', () => {
+       console.info('GC Started')
     })
+
+  state.isAttachedToDebugger = true
+  state.tabId = tabId
 }
 
 async function detached () {
-  clearInterval(realtime)
   await chrome.browserAction.setIcon({ path: 'icons/icon.png' })
   chrome.notifications.create({
     type: 'basic',
