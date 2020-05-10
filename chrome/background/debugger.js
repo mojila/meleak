@@ -3,7 +3,7 @@ const attached = async (tabId) => {
     return console.warn(chrome.runtime.lastError.message)
   }
 
-  chrome.browserAction.setIcon({ path: 'icons/icon-active.png' })
+  await chrome.browserAction.setIcon({ path: 'icons/icon-active.png' })
   chrome.browserAction.setBadgeText({ text: '0', tabId })
   chrome.browserAction.setBadgeBackgroundColor({ color: '#005b96', tabId: tabId })
   chrome.notifications.create({
@@ -20,7 +20,8 @@ const attached = async (tabId) => {
 }
 
 async function detached () {
-  chrome.browserAction.setIcon({ path: 'icons/icon.png' })
+  clearInterval(realtime)
+  await chrome.browserAction.setIcon({ path: 'icons/icon.png' })
   chrome.notifications.create({
     type: 'basic',
     iconUrl: 'icons/icon.png',

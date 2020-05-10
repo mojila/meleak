@@ -29,7 +29,14 @@ const anomalyAnalysis = (anomaly) => {
 const updateHeap = async () => {
   let series = await state
     .heapData
-    .map(d => d.heap)
+    .slice(-10)
+    .map(d => {
+      let time = new Date(d.time)
+      let value = Number((d.heap / 1000000).toFixed(2))
+      let formattedTime = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
+
+      return { x: formattedTime, y: value }
+    })
 
   chrome
     .browserAction
@@ -39,8 +46,8 @@ const updateHeap = async () => {
     })
 
   // hasil outlier
-  let anomaly = await outlier_detection(state.heapData)
-  anomalyAnalysis(anomaly)
+  // let anomaly = await outlier_detection(state.heapData)
+  // anomalyAnalysis(anomaly)
   
   return chrome
     .runtime
@@ -65,9 +72,9 @@ const realtime = setInterval(() => {
         state.usedHeap = usedSize
 
         if (state.heapData.length < 60) {
-          state.heapData = [...state.heapData, { time: time, heap: Number((usedSize / 1000000).toFixed(2)) }]
+          state.heapData = [...state.heapData, { time: time, heap: usedSize }]
         } else {
-          state.heapData = [...state.heapData.slice(1), { time: time, heap: Number((usedSize / 1000000).toFixed(2)) }]
+          state.heapData = [...state.heapData.slice(1), { time: time, heap: usedSize }]
         }
 
         return;
