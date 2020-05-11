@@ -3,7 +3,8 @@
 async function messageIncoming ({ action, payload }, _sender, sendResponse) {
   switch (action) {
     case ACTIONS.attachDebugger:
-      attachToDebugger(payload.tabId)
+      console.log(payload)
+      attachToDebugger(payload)
       break
     case ACTIONS.detachDebugger:
       state.usedHeap = 0

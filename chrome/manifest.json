@@ -11,7 +11,8 @@
     "activeTab",
     "debugger",
     "notifications",
-    "storage"
+    "storage",
+    "webNavigation"
   ],
   "background": {
     "scripts": [
