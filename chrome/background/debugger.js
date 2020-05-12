@@ -5,7 +5,12 @@ function changeUrl(newUrl = '') {
 }
 
 function pageUpdated(details = { frameId: 0, parentFrameId: -1, processId: 0, tabId: 0, timeStamp: 0, transitionQualifiers: [], transitionType: '', url: '' }) {
-  console.log(new Date(details.timeStamp).toISOString(), new URL(details.url))
+  const time = new Date(details.timeStamp).toISOString()
+  const url = new URL(details.url)
+
+  if (url.pathname !== state.page.url.pathname) {
+    changePage(time, url)
+  }
 }
 
 const boundPageUpdated = pageUpdated.bind(null)
@@ -19,7 +24,7 @@ const attached = async (tab = { id: 0, url: '' }) => {
   const newUrl = new URL(tab.url)
   const time = new Date().toISOString()
 
-  console.log(time, newUrl.origin)
+  changePage(time, newUrl)
 
   chrome.webNavigation.onHistoryStateUpdated.addListener(boundPageUpdated, url);
 
@@ -42,6 +47,11 @@ const attached = async (tab = { id: 0, url: '' }) => {
 }
 
 async function detached () {
+  resetState()
+} 
+
+async function detachFromDebugger (tabId) {
+  await chrome.browserAction.setBadgeText({ text: '', tabId: tabId })
   await chrome.browserAction.setIcon({ path: 'icons/icon.png' })
   chrome.notifications.create({
     type: 'basic',
@@ -49,14 +59,8 @@ async function detached () {
     title: 'Meleak',
     message: 'Memory Debugging is stopped.'
   })
-
-  state.isAttachedToDebugger = false
-} 
-
-async function detachFromDebugger (tabId) {
-  chrome.browserAction.setBadgeText({ text: '', tabId: tabId })
   chrome.webNavigation.onHistoryStateUpdated.removeListener(boundPageUpdated);
-  chrome.debugger.detach({ tabId }, detached)
+  chrome.debugger.detach({ tabId }, detached.bind(null))
 }
 
 async function attachToDebugger (tab = { id: 0, url: '' }) {
