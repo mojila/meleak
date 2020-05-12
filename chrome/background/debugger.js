@@ -15,7 +15,7 @@ function pageUpdated(details = { frameId: 0, parentFrameId: -1, processId: 0, ta
 
 const boundPageUpdated = pageUpdated.bind(null)
 
-const attached = async (tab = { id: 0, url: '' }) => {
+const attached = async (tab) => {
   if (chrome.runtime.lastError) {
     return console.warn(chrome.runtime.lastError.message)
   }
@@ -47,6 +47,15 @@ const attached = async (tab = { id: 0, url: '' }) => {
 }
 
 async function detached () {
+  await chrome.browserAction.setBadgeText({ text: '', tabId: state.tabId })
+  await chrome.browserAction.setIcon({ path: 'icons/icon.png' })
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: 'icons/icon.png',
+    title: 'Meleak',
+    message: 'Memory Debugging is stopped.'
+  })
+  chrome.webNavigation.onHistoryStateUpdated.removeListener(boundPageUpdated);
   resetState()
 } 
 
@@ -60,10 +69,12 @@ async function detachFromDebugger (tabId) {
     message: 'Memory Debugging is stopped.'
   })
   chrome.webNavigation.onHistoryStateUpdated.removeListener(boundPageUpdated);
-  chrome.debugger.detach({ tabId }, detached.bind(null))
+  chrome.debugger.detach({ tabId })
+
+  resetState()
 }
 
-async function attachToDebugger (tab = { id: 0, url: '' }) {
+async function attachToDebugger (tab) {
   const VERSION = '1.3'
   chrome.debugger.attach({ tabId: tab.id }, VERSION, attached.bind(null, tab))
 }

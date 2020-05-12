@@ -38,6 +38,8 @@ const updateHeap = async () => {
       return { x: formattedTime, y: value }
     })
 
+  console.log(state)
+
   chrome
     .browserAction
     .setBadgeText({ 
@@ -56,7 +58,8 @@ const updateHeap = async () => {
       payload: { 
         usedHeap: state.usedHeap, 
         totalHeap: state.totalHeap, 
-        heapData: series 
+        heapData: series,
+        page: state.page.url.pathname 
       } 
     }) 
 }
