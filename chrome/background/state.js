@@ -20,9 +20,14 @@ const resetState = () => {
   }
 }
 
+const clearHeapData = () => {
+  state.heapData = []
+}
+
 const changePage = (time, url) => {
   state.page = {
     time,
     url
   }
+  clearHeapData()
 }

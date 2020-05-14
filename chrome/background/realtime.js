@@ -38,7 +38,7 @@ const updateHeap = async () => {
       return { x: formattedTime, y: value }
     })
 
-  console.log(state)
+  // console.log(state)
 
   chrome
     .browserAction

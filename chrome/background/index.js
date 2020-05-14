@@ -1,4 +1,4 @@
-// TODO: tidak bisa start ketika ganti tab
+// DONE: tidak bisa start ketika ganti tab
 
 async function messageIncoming ({ action, payload }, _sender, sendResponse) {
   switch (action) {

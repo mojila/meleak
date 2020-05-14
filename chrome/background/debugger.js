@@ -4,7 +4,11 @@ function changeUrl(newUrl = '') {
   url = {url: [{urlMatches : newUrl}]}
 }
 
-function pageUpdated(details = { frameId: 0, parentFrameId: -1, processId: 0, tabId: 0, timeStamp: 0, transitionQualifiers: [], transitionType: '', url: '' }) {
+/*
+Documentation 
+https://developer.chrome.com/extensions/webNavigation
+*/
+function pageUpdated(details) {
   const time = new Date(details.timeStamp).toISOString()
   const url = new URL(details.url)
 
@@ -27,6 +31,7 @@ const attached = async (tab) => {
   changePage(time, newUrl)
 
   chrome.webNavigation.onHistoryStateUpdated.addListener(boundPageUpdated, url);
+  chrome.webNavigation.onCompleted.addListener(boundPageUpdated, url)
 
   await chrome.browserAction.setIcon({ path: 'icons/icon-active.png' })
   chrome.browserAction.setBadgeText({ text: '0', tabId: tab.id })
@@ -55,7 +60,10 @@ async function detached () {
     title: 'Meleak',
     message: 'Memory Debugging is stopped.'
   })
-  chrome.webNavigation.onHistoryStateUpdated.removeListener(boundPageUpdated);
+
+  chrome.webNavigation.onHistoryStateUpdated.removeListener(boundPageUpdated)
+  chrome.webNavigation.onCompleted.removeListener(boundPageUpdated)
+
   resetState()
 } 
 
