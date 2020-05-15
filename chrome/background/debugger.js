@@ -13,6 +13,7 @@ function pageUpdated(details) {
   const url = new URL(details.url)
 
   if (url.pathname !== state.page.url.pathname) {
+    saveHeapData(state.page.url)
     changePage(time, url)
   }
 }

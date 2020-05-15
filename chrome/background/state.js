@@ -24,10 +24,28 @@ const clearHeapData = () => {
   state.heapData = []
 }
 
+const saveHeapData = (url) => {
+  let key = url.origin + url.pathname
+  let data = JSON.stringify(state.heapData)
+  let saveHeapData = localStorage.setItem(key, data)
+}
+
+const loadHeapData = (url) => {
+  let key = url.origin + url.pathname
+  let previousHeapData = localStorage.getItem(key)
+
+  if (previousHeapData) {
+    state.heapData = JSON.parse(previousHeapData)
+  } else {
+    clearHeapData()
+  }
+}
+
 const changePage = (time, url) => {
   state.page = {
     time,
     url
   }
-  clearHeapData()
+
+  loadHeapData(url)
 }
