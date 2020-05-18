@@ -48,8 +48,8 @@ const updateHeap = async () => {
     })
 
   // hasil outlier
-  // let anomaly = await outlier_detection(state.heapData)
-  // anomalyAnalysis(anomaly)
+  let anomaly = await outlier_detection(state.heapData)
+  anomalyAnalysis(anomaly)
   
   return chrome
     .runtime
