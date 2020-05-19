@@ -28,7 +28,7 @@ const attached = async (tab) => {
   changeUrl(tab.url)
   const newUrl = new URL(tab.url)
   const time = new Date().toISOString()
-
+  
   changePage(time, newUrl)
 
   chrome.webNavigation.onHistoryStateUpdated.addListener(boundPageUpdated, url);

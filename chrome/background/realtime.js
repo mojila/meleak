@@ -7,22 +7,37 @@ const memoryAnomalyNotification = () => {
   })
 }
 
-const anomalyAnalysis = (anomaly) => {
-  let isAnomalyDetected = anomaly.length > 0
-  // let isPreviousEmpty = state.previousAnomaly.size === 0
+const find_memory_leak = (outliers) => {
+  if (outliers.length > 3) {
 
-  if (isAnomalyDetected) {
-    let extractHeapSize = anomaly.map(d => d.heap)
-    let meanAnomalyHeapSizes = mean(extractHeapSize)
-    console.log(state.previousAnomalyMean, meanAnomalyHeapSizes)
-    if (state.previousAnomalyMean === 0) {
-      state.previousAnomalyMean = meanAnomalyHeapSizes
-    } else {
-      if (meanAnomalyHeapSizes > state.previousAnomalyMean) {
-        state.previousAnomalyMean = meanAnomalyHeapSizes
-        console.log('Memory Leak!')
+    let memory_leak_range = outliers.map((d, i) => {
+      if (i === 0) {
+        return d
       }
+
+      if (d.heap > outliers[i - 1].heap) {
+        return d
+      }
+    })
+
+    let cleared = memory_leak_range.filter(x => x)
+
+    if (cleared.length > 2) {
+      return cleared
     }
+  }
+
+  return []
+}
+
+const anomalyAnalysis = (anomalies) => {
+  let isAnomaliesDetected = anomalies.length > 0
+
+  if (isAnomaliesDetected) {
+    let memory_leak = find_memory_leak(anomalies)
+
+    console.log(anomalies)
+    console.log(memory_leak)
   }
 }
 
