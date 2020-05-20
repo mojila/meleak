@@ -39,6 +39,8 @@ const anomalyAnalysis = (anomalies) => {
 
     // Ketika ditemukan Memory Leak
     if (isMemoryLeakDetected) {
+      memoryAnomalyNotification()
+
       let key = `${state.page.url.origin}${state.page.url.pathname}-leak`
       let getMemoryLeak = localStorage.getItem(key)
       let currentMemoryLeak = []
