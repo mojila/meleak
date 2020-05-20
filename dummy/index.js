@@ -48,5 +48,5 @@ const find_memory_leak = (outliers) => {
 let outlier = outlier_detection(data)
 let memory_leak = find_memory_leak(outlier)
 
-console.log(outlier)
-console.log(memory_leak)
+console.log('Outlier', outlier)
+console.log('Memory Leak', memory_leak)

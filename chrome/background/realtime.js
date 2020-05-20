@@ -1,9 +1,9 @@
 const memoryAnomalyNotification = () => {
   chrome.notifications.create({
     type: 'basic',
-    iconUrl: 'icons/icon-memory-anomaly.png',
+    iconUrl: 'icons/icon-memory-leak.png',
     title: 'Meleak',
-    message: 'Memory Anomaly happened!.'
+    message: 'Memory Leak Detected!'
   })
 }
 
@@ -35,9 +35,32 @@ const anomalyAnalysis = (anomalies) => {
 
   if (isAnomaliesDetected) {
     let memory_leak = find_memory_leak(anomalies)
+    let isMemoryLeakDetected = memory_leak.length > 0
 
-    console.log(anomalies)
-    console.log(memory_leak)
+    // Ketika ditemukan Memory Leak
+    if (isMemoryLeakDetected) {
+      let key = `${state.page.url.origin}${state.page.url.pathname}-leak`
+      let getMemoryLeak = localStorage.getItem(key)
+      let currentMemoryLeak = []
+      let stringifyData = ''
+      
+      if (getMemoryLeak) { // Ketika ada rekaman data memory leak sebelumnya
+        currentMemoryLeak = JSON.parse(getMemoryLeak)
+        currentMemoryLeak.push({
+          heapData: state.heapData,
+          memoryLeak: memory_leak
+        })
+        stringifyData = JSON.stringify(currentMemoryLeak) 
+      } else { // Ketika pertama kali ditemukannya memory leak
+        currentMemoryLeak = [{
+          heapData: state.heapData,
+          memoryLeak: memory_leak
+        }]
+        stringifyData = JSON.stringify(currentMemoryLeak) 
+      }
+
+      let saveMemoryLeak = localStorage.setItem(key, stringifyData)
+    }
   }
 }
 
