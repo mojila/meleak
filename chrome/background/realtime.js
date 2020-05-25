@@ -90,6 +90,14 @@ const updateHeap = async () => {
   // hasil outlier
   let anomaly = await outlier_detection(state.heapData)
   anomalyAnalysis(anomaly)
+
+  let key = `${state.page.url.origin}${state.page.url.pathname}-leak`
+  let memoryLeakSnapshot = localStorage.getItem(key)
+  let memoryLeakCount = 0
+
+  if (memoryLeakSnapshot) {
+    memoryLeakCount = JSON.parse(memoryLeakSnapshot).length
+  }
   
   return chrome
     .runtime
@@ -99,7 +107,8 @@ const updateHeap = async () => {
         usedHeap: state.usedHeap, 
         totalHeap: state.totalHeap, 
         heapData: series,
-        page: state.page.url.pathname 
+        page: state.page.url.pathname,
+        memoryLeak: memoryLeakCount
       } 
     }) 
 }

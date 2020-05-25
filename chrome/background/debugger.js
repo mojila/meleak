@@ -53,6 +53,9 @@ const attached = async (tab) => {
 }
 
 async function detached () {
+  if (chrome.runtime.lastError) {
+    return console.warn(chrome.runtime.lastError.message)
+  }
   await chrome.browserAction.setBadgeText({ text: '', tabId: state.tabId })
   await chrome.browserAction.setIcon({ path: 'icons/icon.png' })
   chrome.notifications.create({
@@ -69,6 +72,9 @@ async function detached () {
 } 
 
 async function detachFromDebugger (tabId) {
+  if (chrome.runtime.lastError) {
+    return console.warn(chrome.runtime.lastError.message)
+  }
   await chrome.browserAction.setBadgeText({ text: '', tabId: tabId })
   await chrome.browserAction.setIcon({ path: 'icons/icon.png' })
   chrome.notifications.create({
