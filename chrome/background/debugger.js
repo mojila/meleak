@@ -1,5 +1,32 @@
 var url = {url: [{urlMatches : 'https://www.google.com/'}]}
 
+const setTarget = (url) => {
+  try {
+    let key = 'meleak-active'
+    localStorage.setItem(key, url)
+  } catch(e) {
+    console.warn(e)
+  }
+}
+
+const savePage = (page) => {
+  try {
+    let newUrl = new URL(page)
+    let key = `${newUrl.origin}-pages`
+    let currentPages = localStorage.getItem(key)
+    let pages = new Set()
+
+    if (currentPages) {
+      pages = new Set(JSON.parse(currentPages))
+    }
+
+    pages.add(page)
+    localStorage.setItem(key, JSON.stringify(Array.from(pages)))
+  } catch(e) {
+    console.warn(e)
+  }
+}
+
 function changeUrl(newUrl = '') {
   url = {url: [{urlMatches : newUrl}]}
 }
@@ -12,9 +39,20 @@ function pageUpdated(details) {
   const time = new Date(details.timeStamp).toISOString()
   const url = new URL(details.url)
 
+  savePage(url.href)
+
   if (url.pathname !== state.page.url.pathname) {
     saveHeapData(state.page.url)
     changePage(time, url)
+  }
+}
+
+const saveInfo = (info) => {
+  try {
+    let key = `${info.url}-info`
+    localStorage.setItem(key, JSON.stringify(info))
+  } catch(e) {
+    console.warn(e)
   }
 }
 
@@ -27,9 +65,21 @@ const attached = async (tab) => {
 
   changeUrl(tab.url)
   const newUrl = new URL(tab.url)
-  const time = new Date().toISOString()
-  
-  changePage(time, newUrl)
+  const time = new Date()
+  const info = {
+    title: tab.title,
+    icon: tab.favIconUrl,
+    url: newUrl.origin
+  }
+
+  // set target
+  setTarget(newUrl.origin)
+  // save info
+  saveInfo(info)
+  // save page
+  savePage(tab.url)
+
+  changePage(time.toISOString(), newUrl)
 
   chrome.webNavigation.onHistoryStateUpdated.addListener(boundPageUpdated, url);
   chrome.webNavigation.onCompleted.addListener(boundPageUpdated, url)
