@@ -37,14 +37,44 @@ https://developer.chrome.com/extensions/webNavigation
 */
 function pageUpdated(details) {
   const time = new Date(details.timeStamp).toISOString()
-  const url = new URL(details.url)
+  try {
+    const url = new URL(details.url)
 
-  savePage(url.href)
+    savePage(url.href)
 
-  if (url.pathname !== state.page.url.pathname) {
-    saveHeapData(state.page.url)
-    changePage(time, url)
+    if (url.pathname !== state.page.url.pathname) {
+      saveHeapData(state.page.url)
+      changePage(time, url)
+    }
+  } catch(e) {
+    console.log(details.url)
+    console.warn(e)
   }
+}
+
+const getDomCounters = (tabId) => {
+  chrome.debugger
+    .sendCommand({ tabId: tabId }, 'Memory.getDOMCounters', (result) => {
+      /*
+      result = 
+      documents: integer
+      nodes: integer
+      jsEventListeners: integer
+      */
+      console.log(result)
+    })
+}
+
+const getSamplingProfile = (tabId) => {
+  chrome.debugger
+    .sendCommand({ tabId: tabId }, 'Memory.getSamplingProfile', (result) => {
+      /**
+       * result
+       * profile: SamplingProfile
+       * https://chromedevtools.github.io/devtools-protocol/tot/Memory/#type-SamplingProfile
+       */
+      console.log(result)
+    })
 }
 
 const saveInfo = (info) => {
@@ -57,6 +87,37 @@ const saveInfo = (info) => {
 }
 
 const boundPageUpdated = pageUpdated.bind(null)
+
+const collectGarbage = (tabId) => {
+  chrome.debugger
+    .sendCommand({ tabId: tabId }, 'HeapProfiler.collectGarbage', () => {
+       console.info('GC Started')
+    })
+}
+
+const prepareForLeakDetectioon = (tabId) => {
+  chrome.debugger.sendCommand({ tabId: tabId }, 'Memory.prepareForLeakDetection', () => {
+    console.log('prepare for memory leak detection')
+  })
+}
+
+const runtimeEvaluate = (tabId) => {
+  chrome.debugger.sendCommand({ tabId: tabId }, 'Runtime.evaluate', { expression: 'a' }, (result) => {
+    console.log(result)
+  })
+}
+
+const requestMemoryDump = (tabId) => {
+  chrome.debugger.sendCommand({ tabId: tabId }, 'Tracing.requestMemoryDump', { deterministic: true }, (result) => {
+    console.log(result)
+  })
+}
+
+const takeHeapSnapshot = (tabId) => {
+  chrome.debugger.sendCommand({ tabId: tabId }, 'HeapProfiler.takeHeapSnapshot', { reportProgress: false, treatGlobalObjectsAsRoots: true }, () => {
+    console.log('Taking Heap Snapshot Completed')
+  })
+}
 
 const attached = async (tab) => {
   if (chrome.runtime.lastError) {
@@ -93,10 +154,7 @@ const attached = async (tab) => {
     title: 'Meleak',
     message: 'Memory Debugging is started.'
   })
-  chrome.debugger
-    .sendCommand({ tabId: tab.id }, 'HeapProfiler.collectGarbage', () => {
-       console.info('GC Started')
-    })
+  collectGarbage(tab.id)
 
   state.isAttachedToDebugger = true
   state.tabId = tab.id

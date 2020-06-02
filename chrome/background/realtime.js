@@ -39,8 +39,6 @@ const anomalyAnalysis = (anomalies) => {
 
     // Ketika ditemukan Memory Leak
     if (isMemoryLeakDetected) {
-      memoryAnomalyNotification()
-
       let key = `${state.page.url.origin}${state.page.url.pathname}-leak`
       let getMemoryLeak = localStorage.getItem(key)
       let currentMemoryLeak = []
@@ -48,12 +46,21 @@ const anomalyAnalysis = (anomalies) => {
       
       if (getMemoryLeak) { // Ketika ada rekaman data memory leak sebelumnya
         currentMemoryLeak = JSON.parse(getMemoryLeak)
-        currentMemoryLeak.push({
-          heapData: state.heapData,
-          memoryLeak: memory_leak
-        })
+        let beforeCheck = new Set(currentMemoryLeak[currentMemoryLeak.length - 1].memoryLeak)
+        let afterCheck = new Set([...beforeCheck, ...memory_leak])
+        
+        if (beforeCheck.size !== afterCheck.size) {
+          memoryAnomalyNotification()
+          
+          currentMemoryLeak.push({
+            heapData: state.heapData,
+            memoryLeak: memory_leak
+          })
+        }
         stringifyData = JSON.stringify(currentMemoryLeak) 
       } else { // Ketika pertama kali ditemukannya memory leak
+        memoryAnomalyNotification()
+
         currentMemoryLeak = [{
           heapData: state.heapData,
           memoryLeak: memory_leak

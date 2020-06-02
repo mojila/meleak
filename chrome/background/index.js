@@ -19,3 +19,8 @@ async function messageIncoming ({ action, payload }, _sender, sendResponse) {
 
 chrome.runtime.onMessage.addListener(messageIncoming)
 chrome.debugger.onDetach.addListener(detached)
+chrome.debugger.onEvent.addListener(function (source, method, params) {
+  if (method == 'HeapProfiler.addHeapSnapshotChunk') {
+    console.log(params)
+  }
+})
