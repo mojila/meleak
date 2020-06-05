@@ -31,6 +31,20 @@ function changeUrl(newUrl = '') {
   url = {url: [{urlMatches : newUrl}]}
 }
 
+const requestScripts = (tabId, url) => {
+  chrome.tabs.sendMessage(tabId, {message: "get_codes"}, function(response) {
+    if (response.codes) {
+      const key = `${url}-scripts`
+      try {
+        localStorage.setItem(key, JSON.stringify(response.codes))
+      } catch (err) {
+        console.warn(err)
+      }
+    }
+  });
+}
+
+
 /*
 Documentation 
 https://developer.chrome.com/extensions/webNavigation
@@ -45,6 +59,7 @@ function pageUpdated(details) {
     if (url.pathname !== state.page.url.pathname) {
       saveHeapData(state.page.url)
       changePage(time, url)
+      requestScripts(state.tabId, url.href)
     }
   } catch(e) {
     console.log(details.url)
@@ -139,6 +154,8 @@ const attached = async (tab) => {
   saveInfo(info)
   // save page
   savePage(tab.url)
+  // get scripts
+  requestScripts(tab.id, newUrl.href)
 
   changePage(time.toISOString(), newUrl)
 

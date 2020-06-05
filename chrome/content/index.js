@@ -1,6 +1,5 @@
 let scripts = Array.from(document.scripts).filter(x => x.parentElement.localName === 'body')
 
-let codes = []
 
 async function asyncForEach(array, callback) {
   for (let index = 0; index < array.length; index++) {
@@ -8,7 +7,9 @@ async function asyncForEach(array, callback) {
   }
 }
 
-async function main() {
+async function getScripts() {
+  const codes = []
+  
   await asyncForEach(scripts, async (d) => {
     let code = ''
 
@@ -21,7 +22,13 @@ async function main() {
     codes.push(code)
   })
 
-  console.log(codes)
+  return codes
 }
 
-main()
+chrome.extension.onMessage.addListener((message, sender, sendResponse) => {
+  (async () => {
+    const codes = await getScripts()
+    sendResponse({ codes })
+  })()
+  return true
+})
