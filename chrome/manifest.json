@@ -26,6 +26,12 @@
       "background/index.js"
     ]
   },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content/index.js"]
+    }
+  ],
   "browser_action": {
     "default_icon": "icons/icon.png",
     "default_title": "Meleak",
