@@ -12,7 +12,8 @@
     "debugger",
     "notifications",
     "storage",
-    "webNavigation"
+    "webNavigation",
+    "unlimitedStorage"
   ],
   "options_page": "option/index.html",
   "web_accessible_resources": ["option/index.html"],
