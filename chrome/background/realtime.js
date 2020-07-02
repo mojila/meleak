@@ -1,4 +1,4 @@
-const memoryAnomalyNotification = () => {
+const memoryLeakNotification = () => {
   chrome.notifications.create({
     type: 'basic',
     iconUrl: 'icons/icon-memory-leak.png',
@@ -46,20 +46,31 @@ const anomalyAnalysis = (anomalies) => {
       
       if (getMemoryLeak) { // Ketika ada rekaman data memory leak sebelumnya
         currentMemoryLeak = JSON.parse(getMemoryLeak)
-        let beforeCheck = new Set(currentMemoryLeak[currentMemoryLeak.length - 1].memoryLeak)
-        let afterCheck = new Set([...beforeCheck, ...memory_leak])
+        // let beforeCheck = new Set(currentMemoryLeak[currentMemoryLeak.length - 1].memoryLeak)
+        // let afterCheck = new Set([...beforeCheck, ...memory_leak])
         
-        if (beforeCheck.size !== afterCheck.size) {
-          memoryAnomalyNotification()
+        // if (beforeCheck.size !== afterCheck.size) {
+        //   memoryLeakNotification()
+          
+        //   currentMemoryLeak.push({
+        //     heapData: state.heapData,
+        //     memoryLeak: memory_leak
+        //   })
+        // }
+
+        if (memory_leak[0].time !== currentMemoryLeak[currentMemoryLeak.length - 1].memoryLeak[0].time) {
+          memoryLeakNotification()
           
           currentMemoryLeak.push({
             heapData: state.heapData,
             memoryLeak: memory_leak
           })
         }
+
+
         stringifyData = JSON.stringify(currentMemoryLeak) 
       } else { // Ketika pertama kali ditemukannya memory leak
-        memoryAnomalyNotification()
+        memoryLeakNotification()
 
         currentMemoryLeak = [{
           heapData: state.heapData,
@@ -68,7 +79,7 @@ const anomalyAnalysis = (anomalies) => {
         stringifyData = JSON.stringify(currentMemoryLeak) 
       }
 
-      let saveMemoryLeak = localStorage.setItem(key, stringifyData)
+      localStorage.setItem(key, stringifyData)
     }
   }
 }
