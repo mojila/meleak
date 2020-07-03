@@ -5,7 +5,7 @@ var state = {
   totalHeap: 0,
   heapData: [],
   previousAnomalyMean: 0,
-  sigma: 1,
+  sigma: 3,
   page: ''
 }
 
