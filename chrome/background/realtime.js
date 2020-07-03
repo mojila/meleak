@@ -58,7 +58,13 @@ const anomalyAnalysis = (anomalies) => {
         //   })
         // }
 
-        if (memory_leak[0].time !== currentMemoryLeak[currentMemoryLeak.length - 1].memoryLeak[0].time) {
+        // let notFirstEqual = memory_leak[0].time !== currentMemoryLeak[currentMemoryLeak.length - 1].memoryLeak[0].time
+        // let notLastEqual = memory_leak[memory_leak.length - 1].time !== currentMemoryLeak[currentMemoryLeak.length - 1].memoryLeak[currentMemoryLeak[currentMemoryLeak.length - 1].memoryLeak.length - 1].time
+
+        // console.log(notLastEqual)
+        let currentMemoryLeakHeap = currentMemoryLeak[currentMemoryLeak.length - 1].memoryLeak
+
+        if (memory_leak[0].time !== currentMemoryLeakHeap[0].time || memory_leak[memory_leak.length - 1].time !== currentMemoryLeakHeap[currentMemoryLeakHeap.length - 1].time) {
           memoryLeakNotification()
           
           currentMemoryLeak.push({
