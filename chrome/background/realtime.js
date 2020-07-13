@@ -8,7 +8,7 @@ const memoryLeakNotification = () => {
 }
 
 const find_memory_leak = (outliers) => {
-  if (outliers.length > 3) {
+  if (outliers.length > 2) {
 
     let memory_leak_range = outliers.map((d, i) => {
       if (i === 0) {
@@ -34,11 +34,13 @@ const anomalyAnalysis = (anomalies) => {
   let isAnomaliesDetected = anomalies.length > 0
 
   if (isAnomaliesDetected) {
+    console.log(anomalies)
     let memory_leak = find_memory_leak(anomalies)
     let isMemoryLeakDetected = memory_leak.length > 0
 
     // Ketika ditemukan Memory Leak
     if (isMemoryLeakDetected) {
+      console.log('memory leak', memory_leak)
       let key = `${state.page.url.origin}${state.page.url.pathname}-leak`
       let getMemoryLeak = localStorage.getItem(key)
       let currentMemoryLeak = []

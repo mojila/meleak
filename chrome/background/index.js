@@ -1,5 +1,3 @@
-// DONE: tidak bisa start ketika ganti tab
-
 async function messageIncoming ({ action, payload }, _sender, sendResponse) {
   switch (action) {
     case ACTIONS.attachDebugger:
@@ -10,6 +8,9 @@ async function messageIncoming ({ action, payload }, _sender, sendResponse) {
       break
     case ACTIONS.isAttachedDebugger:
       sendResponse(state.isAttachedToDebugger)
+      break
+    case ACTIONS.clearData:
+      clearData(payload)
       break
     default:
       break

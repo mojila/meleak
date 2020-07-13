@@ -218,3 +218,17 @@ async function attachToDebugger (tab) {
   const VERSION = '1.3'
   chrome.debugger.attach({ tabId: tab.id }, VERSION, attached.bind(null, tab))
 }
+
+function clearData (tab) {
+  let origin = new URL(tab.url).origin
+  let pages = localStorage.getItem(`${origin}-pages`)
+
+  if (pages) {
+    pages = JSON.parse(pages)
+    pages.forEach(value => {
+      localStorage.removeItem(`${value}-leak`)
+      localStorage.removeItem(`${value}-scripts`)
+      localStorage.removeItem(`${value}`)
+    }) 
+  }
+}
